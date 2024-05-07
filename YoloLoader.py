@@ -3,6 +3,8 @@ import torch
 import numpy as np
 from time import time 
 
+from ultralytics import YOLO
+
 class YoloLoader(BaseLoader):
     def __init__(self, model_name: str):
         super().__init__(model_name)
@@ -13,14 +15,6 @@ class YoloLoader(BaseLoader):
 
     def load(self):
         if self.model_name.startswith("yolo"):
-            try:
-                from ultralytics import YOLO
-                
-                print("Import YOLOv8")
-
-            except ImportError:
-                raise ImportError("Please install the ultralytics package")
-            
             try:
                 model = YOLO(self.model_path).to(self.device)
                 

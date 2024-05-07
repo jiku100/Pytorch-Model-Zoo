@@ -1,24 +1,34 @@
 import os
+import sys
+sys.path.append("./Yet_Another_EfficientDet_Pytorch")
+
 from YoloLoader import YoloLoader
+from EfficientDetLoader import EfficientDetLoader
+
+def YoloTest():
+    models = ['yolov8n', 'yolov8s', 'yolov8m', 'yolov8l', 'yolov8x']
+    batch_sizes = [1, 2, 4, 8, 16]
+
+    for model in models:
+        yolo = YoloLoader(model)
+
+        for batch_size in batch_sizes:
+            yolo.setBatchSize(batch_size)
+            yolo.benchmark()
+
+def EfficientDetTest():
+    models = ['efficientdet-d0', 'efficientdet-d1', 'efficientdet-d2', 'efficientdet-d3', 'efficientdet-d4', 'efficientdet-d5', 'efficientdet-d6', 'efficientdet-d7']
+    batch_sizes = [1, 2, 4, 8, 16]
+
+    for model in models:
+        efficientdet = EfficientDetLoader(model)
+
+        for batch_size in batch_sizes:
+            efficientdet.setBatchSize(batch_size)
+            efficientdet.benchmark()
 
 def main():
-    # yolo = YoloLoader("yolov8n")
-    # yolo.setBatchSize(16)
-    # yolo.benchmark()
-
-    import torch
-    entrypoints = torch.hub.list('rwightman/efficientdet-pytorch', force_reload=True)
-    print(entrypoints)
-
-    # # Torch Hub에서 EfficientDet 모델 로드
-    # model = torch.hub.load('rwightman/efficientdet-pytorch', 'tf_efficientdet_d1', pretrained=True)
-
-    # # 모델을 평가 모드로 설정
-    # model.eval()
-
-    # 모델 사용 예제
-    # 예를 들어, 이미지를 모델에 입력하여 결과를 받아볼 수 있습니다.
-
+    EfficientDetTest()
 
 
 if __name__ == "__main__":
