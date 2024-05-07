@@ -1,5 +1,5 @@
 import os
-from models import MODELS
+from configs import MODELS
 
 class BaseLoader:
     def __init__(self, model_name: str):
@@ -12,7 +12,7 @@ class BaseLoader:
 
         self.model = None
 
-        self.resolution = [640, 480] ## Width, Height
+        self.resolution = [640, 360] ## Width, Height
         self.batch_size = 1
 
     def load(self):

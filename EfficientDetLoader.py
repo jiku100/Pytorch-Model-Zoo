@@ -146,8 +146,10 @@ class EfficientDetLoader(BaseLoader):
 
         average_inference_time = (end - start) / 10
 
-        print(f"Latency: {average_inference_time * 1000:.4f} milliseconds")
+        print(f"Latency: {average_inference_time * 1000:.4f} milliseconds\n")
 
+        return average_inference_time
+    
     def invert_affine(self, metas: Union[float, list, tuple], preds):
         for i in range(len(preds)):
             if len(preds[i]['rois']) == 0:

@@ -50,5 +50,7 @@ class YoloLoader(BaseLoader):
 
         average_inference_time = (end - start) / 10
 
-        print(f"Latency: {average_inference_time * 1000:.4f} milliseconds")
+        print(f"Latency: {average_inference_time * 1000:.4f} milliseconds\n")
+
+        return average_inference_time
     

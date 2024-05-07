@@ -15,3 +15,6 @@ MODELS = dict(
         "efficientdet-d7": "checkpoints/efficientdet/efficientdet-d7.pth",
     }
 )
+
+
+RESOLUTIONS = list([[640, 360], [854, 480], [1280, 720], [1920, 1080]])
