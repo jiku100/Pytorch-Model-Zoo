@@ -5,11 +5,15 @@ sys.path.append("./Yet_Another_EfficientDet_Pytorch")
 
 from YoloLoader import YoloLoader
 from EfficientDetLoader import EfficientDetLoader
+from EfficientNetLoader import EfficientNetLoader
+from ResNetLoader import ResNetLoader
+
 from configs import RESOLUTIONS
 
 def YoloTest(output_dir: str):
     models = ['yolov8n', 'yolov8s', 'yolov8m', 'yolov8l', 'yolov8x']
-    batch_sizes = [1, 2, 4, 8, 16]
+    batch_sizes = [1]
+    # batch_sizes = [1, 2, 4, 8, 16]
     
     benchmark_output_path = os.path.join(output_dir, "yolo.pkl")
 
@@ -39,7 +43,8 @@ def YoloTest(output_dir: str):
 
 def EfficientDetTest(output_dir: str):
     models = ['efficientdet-d0', 'efficientdet-d1', 'efficientdet-d2', 'efficientdet-d3', 'efficientdet-d4', 'efficientdet-d5', 'efficientdet-d6', 'efficientdet-d7']
-    batch_sizes = [1, 2, 4, 8, 16]
+    batch_sizes = [1]
+    # batch_sizes = [1, 2, 4, 8, 16]
 
     benchmark_output_path = os.path.join(output_dir, "efficientdet.pkl")
 
@@ -58,9 +63,65 @@ def EfficientDetTest(output_dir: str):
             for batch_size in batch_sizes:
                 efficientdet.setBatchSize(batch_size)
                 latency = efficientdet.benchmark()
+                latencies.append(latency)
 
             result[resolution[1]] = latencies
         
+        results[model] = result
+
+    with open(benchmark_output_path, "wb") as f:
+        pickle.dump(results, f)
+
+def EfficientNetTest(output_dir: str):
+    models = ['efficientnet-b0', 'efficientnet-b1', 'efficientnet-b2', 'efficientnet-b3', 'efficientnet-b4', 'efficientnet-b5', 'efficientnet-b6', 'efficientnet-b7']
+    batch_sizes = [1, 2, 4, 8, 16]
+
+    benchmark_output_path = os.path.join(output_dir, "efficientnet.pkl")
+
+    results = {}
+
+    for model in models:
+        efficientnet = EfficientNetLoader(model)
+
+        result = {}
+        latencies = []
+
+        efficientnet.setResolution(224, 224)
+
+        for batch_size in batch_sizes:
+            efficientnet.setBatchSize(batch_size)
+            latency = efficientnet.benchmark()
+            latencies.append(latency)
+
+        result[224] = latencies
+        
+        results[model] = result
+
+    with open(benchmark_output_path, "wb") as f:
+        pickle.dump(results, f)
+
+def ResNetTest(output_dir: str):
+    models = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
+    batch_sizes = [1, 2, 4, 8, 16]
+
+    benchmark_output_path = os.path.join(output_dir, "resnet.pkl")
+    results = {}
+
+    for model in models:
+        resnet = ResNetLoader(model)
+
+        result = {}
+        latencies = []
+
+        resnet.setResolution(224, 224)
+
+        for batch_size in batch_sizes:
+            resnet.setBatchSize(batch_size)
+            latency = resnet.benchmark()
+            latencies.append(latency)
+
+        result[224] = latencies
+
         results[model] = result
 
     with open(benchmark_output_path, "wb") as f:
@@ -74,6 +135,8 @@ def main():
     YoloTest(benchmark_output_dir)
     EfficientDetTest(benchmark_output_dir)
 
+    EfficientNetTest(benchmark_output_dir)
+    ResNetTest(benchmark_output_dir)
 
 if __name__ == "__main__":
     main()

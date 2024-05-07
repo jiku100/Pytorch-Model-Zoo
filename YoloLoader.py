@@ -1,25 +1,26 @@
-from BaseLoader import BaseLoader
-import torch
-import numpy as np
-from time import time 
 
+import numpy as np
+import os
+
+from time import time 
+import torch
+from BaseLoader import BaseLoader
 from ultralytics import YOLO
 
 class YoloLoader(BaseLoader):
     def __init__(self, model_name: str):
         super().__init__(model_name)
-
+        
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
     
         self.model = self.load()
 
     def load(self):
-        if self.model_name.startswith("yolo"):
-            try:
-                model = YOLO(self.model_path).to(self.device)
-                
-            except Exception as e:
-                raise e
+        try:
+            model = YOLO(self.model_path).to(self.device)
+            
+        except Exception as e:
+            raise e
             
         return model
 
@@ -52,5 +53,5 @@ class YoloLoader(BaseLoader):
 
         print(f"Latency: {average_inference_time * 1000:.4f} milliseconds\n")
 
-        return average_inference_time
+        return average_inference_time * 1000
     

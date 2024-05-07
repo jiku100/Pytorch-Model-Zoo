@@ -1,4 +1,4 @@
-from BaseLoader import BaseLoader
+import os
 import torch
 import torch.nn as nn
 import numpy as np
@@ -8,6 +8,7 @@ from typing import Union
 import sys
 sys.path.append("./Yet-Another-EfficientDet-Pytorch")
 
+from BaseLoader import BaseLoader
 from backbone import EfficientDetBackbone
 from torchvision.ops.boxes import batched_nms
 
@@ -78,21 +79,20 @@ class EfficientDetLoader(BaseLoader):
         
         
     def load(self):
-        if self.model_name.startswith("efficientdet"):
-            self.compound_coef = int(self.model_name[-1])
+        self.compound_coef = int(self.model_name[-1])
 
-            try:
-                model = EfficientDetBackbone(compound_coef=self.compound_coef, num_classes=90,
-                             ratios=self.anchor_ratios, scales=self.anchor_scales)
-                model.load_state_dict(torch.load(self.model_path))
-                model.requires_grad_(False)
-                model.eval()
+        try:
+            model = EfficientDetBackbone(compound_coef=self.compound_coef, num_classes=90,
+                            ratios=self.anchor_ratios, scales=self.anchor_scales)
+            model.load_state_dict(torch.load(self.model_path))
+            model.requires_grad_(False)
+            model.eval()
 
-                if self.device == "cuda":
-                    model = model.cuda()
-                
-            except Exception as e:
-                raise e
+            if self.device == "cuda":
+                model = model.cuda()
+            
+        except Exception as e:
+            raise e
             
         return model
     
@@ -148,7 +148,7 @@ class EfficientDetLoader(BaseLoader):
 
         print(f"Latency: {average_inference_time * 1000:.4f} milliseconds\n")
 
-        return average_inference_time
+        return average_inference_time * 1000
     
     def invert_affine(self, metas: Union[float, list, tuple], preds):
         for i in range(len(preds)):
